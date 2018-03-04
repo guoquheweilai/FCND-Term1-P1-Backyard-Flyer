@@ -57,7 +57,9 @@ class BackyardFlyer(Drone):
         This triggers when `MsgID.LOCAL_VELOCITY` is received and self.local_velocity contains new data
         """
         if Phases.LANDING == self.flight_state:
-        	if ((self.global_position[2] - self.global_home[2] < 0.1) and (abs(self.local_position[2]) < 0.01))
+        	if ((self.global_position[2] - self.global_home[2] < 0.1) and 
+        		(abs(self.local_position[2]) < 0.01)
+        	   )
         		self.disarming_transition()
 
     def state_callback(self):
@@ -91,6 +93,16 @@ class BackyardFlyer(Drone):
         4. Transition to the ARMING state
         """
         print("arming transition")
+        self.take_control()
+        self.arm()
+
+        # set the current location to be the home position
+        self.set_home_position(self.global_position[0],
+        					   self.global_position[1],
+        					   self.global_position[2],
+        					  )
+
+    	self.flight_phase = Phases.ARMING
 
     def takeoff_transition(self):
         """TODO: Fill out this method
@@ -100,6 +112,10 @@ class BackyardFlyer(Drone):
         3. Transition to the TAKEOFF state
         """
         print("takeoff transition")
+        target_altitude = 5.0
+        self.target_position[2] = target_altitude
+        self.takeoff(target_altitude)
+        self.flight_phase = Phases.TAKEOFF
 
     def waypoint_transition(self):
         """TODO: Fill out this method
@@ -116,6 +132,8 @@ class BackyardFlyer(Drone):
         2. Transition to the LANDING state
         """
         print("landing transition")
+        self.land()
+        self.flight_phase = Phases.LANDING
 
     def disarming_transition(self):
         """TODO: Fill out this method
@@ -124,6 +142,8 @@ class BackyardFlyer(Drone):
         2. Transition to the DISARMING state
         """
         print("disarm transition")
+        self.disarm()
+        self.flight_phase = Phases.DISARMING
 
     def manual_transition(self):
         """This method is provided
