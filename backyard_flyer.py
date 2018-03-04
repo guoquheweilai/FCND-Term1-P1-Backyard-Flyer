@@ -48,7 +48,9 @@ class BackyardFlyer(Drone):
 
         	# check if altitude is within 95% of target
         	if altitude > 0.95 * self.target_position[2]:
-        		self.landing_transition()
+        		# self.landing_transition()
+        		self.all_waypoints = self.calculate_box()
+        		self.waypoint_transition()
 
     def velocity_callback(self):
         """
@@ -73,16 +75,25 @@ class BackyardFlyer(Drone):
     	if Phases.MANUAL == self.flight_phase:
     		self.arming_transition()
 		elif Phases.ARMING == self.flight_phase:
-			self.takeoff_transition()
+			if 1 == self.armed:
+				self.takeoff_transition()
 		elif Phases.DISARMING == self.flight_phase:
-			self.manual_transition()
+			if (0 == self.armed) and (0 == self.guided):
+				self.manual_transition()
 
     def calculate_box(self):
         """TODO: Fill out this method
         
         1. Return waypoints to fly a box
         """
-        pass
+        print("Calculating waypoints")
+        cur_waypoints = [[5.0, 0.0, 3.0],
+        			[5.0, 5.0, 3.0],
+        			[0.0, 5.0, 3.0],
+        			[0.0, 0.0, 3.0],
+        		   ]
+
+        return cur_waypoints
 
     def arming_transition(self):
         """TODO: Fill out this method
@@ -124,6 +135,18 @@ class BackyardFlyer(Drone):
         2. Transition to WAYPOINT state
         """
         print("waypoint transition")
+        # Return and remove the first element in the waypoint list
+        self.target_position() = self.all_waypints.pop(0)
+
+        # Command the drone to move to a specific defined position (in meters) with a specific heading (in radians)
+        # In: (north, east, altitude, heading)
+        north = self.target_position[0]
+        east = self.target_position[1]
+        altitude = self.target_position[2]
+        heading = 0.0
+
+        self.cmd_position(north, east, altitude, heading)
+        self.flight_phase = Phases.WAYPOINT
 
     def landing_transition(self):
         """TODO: Fill out this method
