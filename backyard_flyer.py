@@ -42,6 +42,7 @@ class BackyardFlyer(Drone):
         This triggers when `MsgID.LOCAL_POSITION` is received and self.local_position contains new data
         """
         
+        # Check flight state
         if Phases.TAKEOFF == self.flight_state:
         	# coordinate conversion
         	altitude = -1.0 * self.local_position[2]
@@ -58,6 +59,8 @@ class BackyardFlyer(Drone):
 
         This triggers when `MsgID.LOCAL_VELOCITY` is received and self.local_velocity contains new data
         """
+
+        # Check flight state
         if Phases.LANDING == self.flight_state:
         	if ((self.global_position[2] - self.global_home[2] < 0.1) and 
         		(abs(self.local_position[2]) < 0.01)
@@ -75,9 +78,12 @@ class BackyardFlyer(Drone):
     	if Phases.MANUAL == self.flight_phase:
     		self.arming_transition()
 		elif Phases.ARMING == self.flight_phase:
+			print("self.armed is ", self.armed)
 			if 1 == self.armed:
 				self.takeoff_transition()
 		elif Phases.DISARMING == self.flight_phase:
+			print("self.armed is ", self.armed)
+			print("self.guided is ", self.guided)
 			if (0 == self.armed) and (0 == self.guided):
 				self.manual_transition()
 
@@ -87,6 +93,8 @@ class BackyardFlyer(Drone):
         1. Return waypoints to fly a box
         """
         print("Calculating waypoints")
+
+        # Create your own waypoints
         cur_waypoints = [[5.0, 0.0, 3.0],
         			[5.0, 5.0, 3.0],
         			[0.0, 5.0, 3.0],
@@ -166,6 +174,7 @@ class BackyardFlyer(Drone):
         """
         print("disarm transition")
         self.disarm()
+        self.release_control()
         self.flight_phase = Phases.DISARMING
 
     def manual_transition(self):
