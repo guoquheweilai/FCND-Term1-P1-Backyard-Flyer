@@ -64,28 +64,28 @@ class BackyardFlyer(Drone):
         if Phases.LANDING == self.flight_state:
         	if ((self.global_position[2] - self.global_home[2] < 0.1) and 
         		(abs(self.local_position[2]) < 0.01)
-        	   )
+        	   ):
         		self.disarming_transition()
 
     def state_callback(self):
-        """
-        TODO: Implement this method
+    	"""
+    	TODO: Implement this method
 
-        This triggers when `MsgID.STATE` is received and self.armed and self.guided contain new data
-        """
-        if not self.in_mission:
-        	return
+    	This triggers when `MsgID.STATE` is received and self.armed and self.guided contain new data
+    	"""
+    	if not self.in_mission:
+    		return
     	if Phases.MANUAL == self.flight_phase:
     		self.arming_transition()
-		elif Phases.ARMING == self.flight_phase:
-			print("self.armed is ", self.armed)
-			if 1 == self.armed:
-				self.takeoff_transition()
-		elif Phases.DISARMING == self.flight_phase:
-			print("self.armed is ", self.armed)
-			print("self.guided is ", self.guided)
-			if (0 == self.armed) and (0 == self.guided):
-				self.manual_transition()
+    	elif Phases.ARMING == self.flight_phase:
+    		print("self.armed is ", self.armed)
+    		if 1 == self.armed:
+    			self.takeoff_transition()
+    	elif Phases.DISARMING == self.flight_phase:
+    		print("self.armed is ", self.armed)
+    		print("self.guided is ", self.guided)
+    		if (0 == self.armed) and (0 == self.guided):
+    			self.manual_transition()
 
     def calculate_box(self):
         """TODO: Fill out this method
@@ -121,7 +121,7 @@ class BackyardFlyer(Drone):
         					   self.global_position[2],
         					  )
 
-    	self.flight_phase = Phases.ARMING
+        self.flight_phase = Phases.ARMING
 
     def takeoff_transition(self):
         """TODO: Fill out this method
@@ -144,7 +144,7 @@ class BackyardFlyer(Drone):
         """
         print("waypoint transition")
         # Return and remove the first element in the waypoint list
-        self.target_position() = self.all_waypints.pop(0)
+        self.target_position = self.all_waypoints.pop(0)
 
         # Command the drone to move to a specific defined position (in meters) with a specific heading (in radians)
         # In: (north, east, altitude, heading)
