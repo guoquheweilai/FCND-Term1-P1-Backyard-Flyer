@@ -1,0 +1,5 @@
+.gitattributes
+FCND-Sim_Windows_Data/
+windows.zip
+UnityPlayer.dll
+FCND-Sim_Windows.exe
