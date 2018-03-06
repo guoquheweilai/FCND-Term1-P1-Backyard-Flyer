@@ -58,19 +58,24 @@ class BackyardFlyer(Drone):
 
         if States.WAYPOINT == self.flight_state:
         	# Check how close the current position to the target position
-        	pos_diff = []
-        	pos_diff.append(self.target_position[0] - self.local_position[0])
-        	pos_diff.append(self.target_position[1] - self.local_position[1])
-        	pos_diff.append(self.target_position[2] - abs(self.local_position[2]))
+        	# pos_diff = []
+        	# pos_diff.append(self.target_position[0] - self.local_position[0])
+        	# pos_diff.append(self.target_position[1] - self.local_position[1])
+        	# pos_diff.append(self.target_position[2] - abs(self.local_position[2]))
 
         	print("Current length of all_waypoints",  len(self.all_waypoints))
         	print("Current target_position is ", self.target_position)
         	print("Current local_position is ", self.local_position)
-        	print("Current pos_diff is ", pos_diff)
+        	# print("Current pos_diff is ", pos_diff)
 
-        	if ((-0.5 < pos_diff[0] < 0.5) and
-        		(-0.5 < pos_diff[1] < 0.5) and
-        		(-0.5 < pos_diff[2] < 0.5)
+        	# print("np.linalg.norm(self.target_position) is ", np.linalg.norm(self.target_position))
+        	# print("np.linalg.norm(self.local_position) is ", np.linalg.norm(self.local_position))
+        	# print("self.target_position - self.local_position is ", self.target_position - self.local_position)
+        	# print("np.linalg.norm(self.target_position - self.local_position) is ", np.linalg.norm(self.target_position - self.local_position))
+        	# print("self.target_position[0:2] - self.local_position[0:2] is ", self.target_position[0:2] - self.local_position[0:2])
+        	# print("np.linalg.norm(self.target_position[0:2] - self.local_position[0:2]) is ", np.linalg.norm(self.target_position[0:2] - self.local_position[0:2]))
+
+        	if ((np.linalg.norm(self.target_position[:2] - self.local_position[:2])) < 0.5
         	   ):
         		if 0 == len(self.all_waypoints):
         			# Landing after all waypoints being consumed
@@ -86,6 +91,7 @@ class BackyardFlyer(Drone):
         This triggers when `MsgID.LOCAL_VELOCITY` is received and self.local_velocity contains new data
         """
 
+        # print("Check velocity.")
         # Check flight state
         if States.LANDING == self.flight_state:
         	if ((self.global_position[2] - self.global_home[2] < 0.1) and 
@@ -99,6 +105,8 @@ class BackyardFlyer(Drone):
 
     	This triggers when `MsgID.STATE` is received and self.armed and self.guided contain new data
     	"""
+    	
+    	# print("Check state.")
     	if not self.in_mission:
     		return
     	if States.MANUAL == self.flight_state:
